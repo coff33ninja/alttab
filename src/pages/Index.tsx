@@ -4,6 +4,7 @@ import { AddDeviceDialog } from "../components/AddDeviceDialog";
 import { DeviceStats } from "../components/DeviceStats";
 import { FormDialog } from "../components/examples/FormDialog";
 import { useEffect, useState } from "react";
+import { API_ENDPOINTS } from "../config/api";
 import { NetworkDevice } from "../utils/networkUtils";
 import { useToast } from "../hooks/use-toast";
 import axios, { AxiosError } from 'axios';
@@ -37,13 +38,13 @@ const Index = () => {
     const fetchDevices = async () => {
       console.log("Fetching devices from API...");
       try {
-        const response = await axios.get('/api/scan-network');
+        const response = await axios.get(API_ENDPOINTS.NETWORK_SCAN);
         console.log("Response status:", response.status);
         console.log("Response data:", response.data);
-        
+
         if (Array.isArray(response.data)) {
           setDevices(prevDevices => {
-            const newDevices: NetworkDevice[] = response.data.filter((newDevice: NetworkDevice) => 
+            const newDevices: NetworkDevice[] = response.data.filter((newDevice: NetworkDevice) =>
               !prevDevices.some(existingDevice => existingDevice.ip === newDevice.ip)
             );
             return [...prevDevices, ...newDevices];

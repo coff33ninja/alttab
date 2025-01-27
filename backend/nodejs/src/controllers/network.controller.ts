@@ -3,12 +3,14 @@ import { Device } from '@/models/device.model';
 import { networkUtils } from '@/utils/networkUtils';
 import { monitoringService } from '@/services/MonitoringService';
 import { logger } from '@/utils/logger';
+import NetworkScannerService from '@/services/NetworkScannerService';
 
 export class NetworkController {
   // Network scanning
   async scanNetwork(req: Request, res: Response) {
     try {
-      const devices = await networkUtils.scanNetwork();
+      const ipRange = req.query.ipRange || '192.168.1.0/24'; // Default IP range
+      const devices = await NetworkScannerService.scanNetwork(ipRange as string);
       res.json({ devices });
     } catch (error) {
       logger.error('Network scan failed:', error);
@@ -23,10 +25,14 @@ export class NetworkController {
       if (!macAddress) {
         return res.status(400).json({ error: 'MAC address is required' });
       }
-      
-      await networkUtils.wakeDevice(macAddress);
-      logger.info(`Wake-on-LAN packet sent to ${macAddress}`);
-      res.json({ success: true, message: 'Wake-on-LAN packet sent' });
+
+      const success = await networkUtils.wakeDevice(macAddress);
+      if (success !== undefined) { // Changed condition
+        logger.info(`Wake-on-LAN packet sent to ${macAddress}`);
+        res.json({ success: true, message: 'Wake-on-LAN packet sent' });
+      } else {
+        res.status(500).json({ error: 'Failed to send Wake-on-LAN packet' });
+      }
     } catch (error) {
       logger.error('Wake-on-LAN failed:', error);
       res.status(500).json({ error: 'Failed to send Wake-on-LAN packet' });
@@ -62,7 +68,7 @@ export class NetworkController {
           requireConfirmation: true
         }
       };
-      
+
       const device = new Device(deviceData);
       await device.save();
 
@@ -81,20 +87,20 @@ export class NetworkController {
       const { id } = req.params;
       const userId = req.user?.id;
       const update = req.body;
-      
+
       const device = await Device.findOneAndUpdate(
         { _id: id, userId },
         update,
         { new: true }
       );
-      
+
       if (!device) {
         return res.status(404).json({ error: 'Device not found' });
       }
 
       // Update monitoring settings if they changed
       await monitoringService.updateDeviceMonitoring(device);
-      
+
       res.json({ device });
     } catch (error) {
       logger.error('Failed to update device:', error);
@@ -106,9 +112,9 @@ export class NetworkController {
     try {
       const { id } = req.params;
       const userId = req.user?.id;
-      
+
       const device = await Device.findOneAndDelete({ _id: id, userId });
-      
+
       if (!device) {
         return res.status(404).json({ error: 'Device not found' });
       }
@@ -116,7 +122,7 @@ export class NetworkController {
       // Stop monitoring for the deleted device
       monitoringService.stopMonitoring(id);
       monitoringService.stopWakeCron(`wake_${id}`);
-      
+
       res.json({ success: true });
     } catch (error) {
       logger.error('Failed to delete device:', error);
@@ -136,7 +142,7 @@ export class NetworkController {
       }
 
       const isOnline = await networkUtils.pingDevice(device.ipAddress);
-      
+
       await Device.findByIdAndUpdate(id, {
         isOnline,
         lastSeen: isOnline ? new Date() : device.lastSeen

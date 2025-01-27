@@ -23,8 +23,8 @@ const Settings = () => {
   const [settings, setSettings] = useState({
     appName: "UpSnap",
     faviconUrl: "",
-    darkMode: false,
-    accentColor: "#0066ff",
+    darkMode: true, // Enable dark mode by default
+    accentColor: "#00ff00", // Green accent color
     networkSubnet: "192.168.1.0/24",
     autoScan: true,
     deviceNotifications: true,

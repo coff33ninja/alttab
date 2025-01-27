@@ -44,7 +44,11 @@ const Users = () => {
     }
 
     const success = await databaseService.deleteUser(userId);
-    
+
+    if (success) {
+      setUsers(users.filter(user => user.id !== userId)); // Update UI after deletion
+    }
+
     toast({
       title: success ? "User deleted" : "Delete failed",
       description: success
@@ -62,7 +66,7 @@ const Users = () => {
             <UsersIcon className="h-6 w-6 text-primary" />
             <h1 className="text-3xl font-bold">Users</h1>
           </div>
-          
+
           <div className="relative w-64">
             <Input
               placeholder="Search users..."

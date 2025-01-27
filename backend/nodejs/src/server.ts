@@ -38,6 +38,7 @@ app.use(limiter);
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // Routes
 app.use('/api/auth', authRoutes);

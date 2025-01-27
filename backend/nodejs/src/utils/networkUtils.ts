@@ -3,6 +3,7 @@ import wol from 'wake-on-lan';
 import util from 'util';
 import os from 'os';
 import { networkInterfaces } from 'os';
+import NetworkScannerService from '../services/NetworkScannerService';
 
 const execAsync = util.promisify(exec);
 
@@ -30,40 +31,22 @@ interface NetworkInterfaceInfo {
 }
 
 class NetworkUtils {
-    async scanNetwork(): Promise<NetworkDevice[]> {
-        try {
-            const { interfaceName, interfaceInfo } = this.getDefaultInterface();
-            if (!interfaceName || !interfaceInfo) {
-                throw new Error('No suitable network interface found');
-            }
-
-            // Different commands for different operating systems
-            let command: string;
-            if (process.platform === 'win32') {
-                // On Windows, use ARP -a
-                command = 'arp -a';
-            } else {
-                // On Linux/Mac, use arp-scan if available
-                command = `arp-scan --localnet --interface=${interfaceName}`;
-            }
-
-            const { stdout } = await execAsync(command);
-            return this.parseArpOutput(stdout, process.platform);
-
-        } catch (error) {
-            console.error('Network scan error:', error);
-            throw new Error('Failed to scan network');
+    async scanNetwork(ipRanges: string[]): Promise<NetworkDevice[]> {
+        const allDevices: NetworkDevice[] = [];
+        for (const ipRange of ipRanges) {
+            console.log(`Scanning network with IP range: ${ipRange}`);
+            const devices = await NetworkScannerService.scanNetwork(ipRange);
+            console.log(`Devices found: ${JSON.stringify(devices)}`);
+            allDevices.push(...devices);
         }
+        return allDevices;
     }
 
     async wakeDevice(macAddress: string): Promise<void> {
         try {
-            // Validate MAC address format
             if (!this.isValidMacAddress(macAddress)) {
                 throw new Error('Invalid MAC address format');
             }
-
-            // Send WOL packet
             await wolSend(macAddress);
         } catch (error) {
             console.error('Wake-on-LAN error:', error);
@@ -102,10 +85,6 @@ class NetworkUtils {
         const lines = output.split('\n');
 
         if (platform === 'win32') {
-            // Windows ARP output format
-            // Interface: 192.168.1.2 --- 0x4
-            //   Internet Address      Physical Address      Type
-            //   192.168.1.1          00-11-22-33-44-55     dynamic
             const regex = /\s+(\d+\.\d+\.\d+\.\d+)\s+([0-9a-fA-F-]{17})/;
             for (const line of lines) {
                 const match = line.match(regex);
@@ -117,8 +96,6 @@ class NetworkUtils {
                 }
             }
         } else {
-            // Linux/Mac ARP-SCAN output format
-            // 192.168.1.1	00:11:22:33:44:55	Router
             const regex = /(\d+\.\d+\.\d+\.\d+)\s+([0-9a-fA-F:]{17})/;
             for (const line of lines) {
                 const match = line.match(regex);
@@ -135,13 +112,11 @@ class NetworkUtils {
     }
 
     private isValidMacAddress(mac: string): boolean {
-        // Support both : and - as separators
         const macRegex = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/;
         return macRegex.test(mac);
     }
 
     private standardizeMacAddress(mac: string): string {
-        // Convert to uppercase and standardize format to use colons
         return mac.toUpperCase().replace(/-/g, ':');
     }
 
