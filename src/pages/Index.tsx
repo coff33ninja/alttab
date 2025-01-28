@@ -2,9 +2,10 @@ import Layout from "../components/Layout";
 import { DeviceCard } from "../components/DeviceCard";
 import { AddDeviceDialog } from "../components/AddDeviceDialog";
 import { DeviceStats } from "../components/DeviceStats";
+import { FormDialog } from "../components/examples/FormDialog";
 import { useEffect, useState } from "react";
 import { NetworkDevice } from "../utils/networkUtils";
-import { useToast } from "../components/ui/use-toast";
+import { useToast } from "../hooks/use-toast";
 import axios, { AxiosError } from 'axios';
 
 const STORAGE_KEY = 'network-devices';
@@ -107,7 +108,10 @@ const Index = () => {
             Manage and monitor your network devices
           </p>
         </div>
-        <AddDeviceDialog onDeviceAdd={handleAddDevice} />
+        <div className="flex gap-2">
+          <FormDialog />
+          <AddDeviceDialog onDeviceAdd={handleAddDevice} />
+        </div>
       </div>
 
       <DeviceStats devices={devices} />
