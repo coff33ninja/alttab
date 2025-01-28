@@ -7,7 +7,7 @@ import LoginForm from "@/components/auth/LoginForm";
 import { RegisterForm } from "@/components/auth/RegisterForm";
 import Layout from "@/components/Layout";
 import ProfileSettings from "@/components/profile/ProfileSettings";
-import SecuritySettings from "@/components/profile/SecuritySettings";
+import { SecuritySettings } from "@/components/profile/SecuritySettings";
 import { UserCircle } from "lucide-react";
 
 const Account = () => {
