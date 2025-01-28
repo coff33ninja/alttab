@@ -14,9 +14,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="flex">
+      <div className="flex min-h-screen">
         {/* Sidebar */}
-        <div className="fixed left-0 top-0 bottom-0 w-72">
+        <div className="fixed left-0 top-0 bottom-0 w-72 z-40">
           <div className="flex h-full flex-col gap-y-5 overflow-y-auto bg-card px-6 pb-4 ring-1 ring-border/5">
             <div className="flex h-16 shrink-0 items-center">
               <img
@@ -24,7 +24,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 src="/lovable-uploads/5b365417-f2a4-4acf-9b1c-9fdcb92cc02e.png"
                 alt="Logo"
               />
-              <span className="ml-4 text-lg font-semibold">UpSnap</span>
+              <span className="ml-4 text-lg font-semibold text-foreground">UpSnap</span>
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -71,7 +71,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </div>
 
         {/* Main content */}
-        <main className="flex-1 ml-72">
+        <main className="flex-1 ml-72 bg-background min-h-screen">
           <div className="p-8">{children}</div>
         </main>
       </div>
