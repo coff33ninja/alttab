@@ -20,7 +20,7 @@ const DrawerPortal: React.FC<React.ComponentProps<typeof DrawerPrimitive.Portal>
 
 const DrawerClose: React.FC<React.ComponentProps<typeof DrawerPrimitive.Close>> = DrawerPrimitive.Close
 
-const DrawerOverlay = React.forwardRef<
+const DrawerOverlay: React.FC<React.ComponentProps<typeof DrawerPrimitive.Overlay>> = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
@@ -32,7 +32,7 @@ const DrawerOverlay = React.forwardRef<
 ))
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName
 
-const DrawerContent = React.forwardRef<
+const DrawerContent: React.FC<React.ComponentProps<typeof DrawerPrimitive.Content>> = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
 >(({ className, children, ...props }, ref) => (
@@ -75,7 +75,7 @@ const DrawerFooter = ({
 )
 DrawerFooter.displayName = "DrawerFooter"
 
-const DrawerTitle = React.forwardRef<
+const DrawerTitle: React.FC<React.ComponentProps<typeof DrawerPrimitive.Title>> = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>
 >(({ className, ...props }, ref) => (
@@ -90,7 +90,7 @@ const DrawerTitle = React.forwardRef<
 ))
 DrawerTitle.displayName = DrawerPrimitive.Title.displayName
 
-const DrawerDescription = React.forwardRef<
+const DrawerDescription: React.FC<React.ComponentProps<typeof DrawerPrimitive.Description>> = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Description>
 >(({ className, ...props }, ref) => (
