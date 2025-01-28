@@ -23,8 +23,8 @@ const Account = () => {
   if (currentUser) {
     return (
       <Layout>
-        <div className="space-y-6 animate-fade-in">
-          <div className="flex items-center space-x-4">
+        <div className="container mx-auto px-4 py-8 max-w-4xl animate-fade-in">
+          <div className="flex items-center space-x-4 mb-8">
             <div className="bg-primary/10 p-3 rounded-full">
               <UserCircle className="h-12 w-12 text-primary" />
             </div>
@@ -36,30 +36,28 @@ const Account = () => {
             </div>
           </div>
 
-          <div className="grid gap-6">
-            <Card className="p-6">
-              <Tabs defaultValue="profile" className="space-y-4">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="profile">Profile</TabsTrigger>
-                  <TabsTrigger value="security">Security</TabsTrigger>
-                </TabsList>
-                <TabsContent value="profile" className="space-y-4">
-                  <ProfileSettings />
-                </TabsContent>
-                <TabsContent value="security" className="space-y-4">
-                  <SecuritySettings />
-                </TabsContent>
-              </Tabs>
-            </Card>
-          </div>
+          <Card className="p-6">
+            <Tabs defaultValue="profile" className="space-y-4">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="profile">Profile</TabsTrigger>
+                <TabsTrigger value="security">Security</TabsTrigger>
+              </TabsList>
+              <TabsContent value="profile" className="space-y-4">
+                <ProfileSettings />
+              </TabsContent>
+              <TabsContent value="security" className="space-y-4">
+                <SecuritySettings />
+              </TabsContent>
+            </Tabs>
+          </Card>
         </div>
       </Layout>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="w-full max-w-md space-y-8 p-8">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center justify-center text-center">
           <img
             src="/lovable-uploads/5b365417-f2a4-4acf-9b1c-9fdcb92cc02e.png"
